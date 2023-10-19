@@ -74,6 +74,10 @@ namespace BOT_V2.Binance.Spot
         {
             return await SendPublicAsync<string>("/api/v3/time", HttpMethod.Get);
         }
+        public async Task<string> Future_CheckServerTime()
+        {
+            return await SendPublicAsync<string>("/fapi/v1/time", HttpMethod.Get);
+        }
 
         //
         // Summary:
@@ -244,6 +248,17 @@ namespace BOT_V2.Binance.Spot
         public async Task<string> KlineCandlestickData(string symbol, Interval interval, long? startTime = null, long? endTime = null, int? limit = null)
         {
             return await SendPublicAsync<string>("/api/v3/klines", HttpMethod.Get, new Dictionary<string, object>
+            {
+                { "symbol", symbol },
+                { "interval", interval },
+                { "startTime", startTime },
+                { "endTime", endTime },
+                { "limit", limit }
+            });
+        }
+        public async Task<string> Future_KlineCandlestickData(string symbol, Interval interval, long? startTime = null, long? endTime = null, int? limit = null)
+        {
+            return await SendPublicAsync<string>("/fapi/v1/klines", HttpMethod.Get, new Dictionary<string, object>
             {
                 { "symbol", symbol },
                 { "interval", interval },
