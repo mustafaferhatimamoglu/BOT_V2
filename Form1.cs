@@ -44,7 +44,9 @@ namespace BOT_V2
             var serverTime = await market.CheckServerTime();
             var future_serverTime = await futureMarket.Future_CheckServerTime();
 
-            GetDataFromBinance.Create_Coin("BTCUSDT");
+            var getDataFromBinance = new GetDataFromBinance();
+            //await GetDataFromBinance.Create_Coin("BTCUSDT");
+            getDataFromBinance.Create_Coin("BTCUSDT");
         }
     }
 }
