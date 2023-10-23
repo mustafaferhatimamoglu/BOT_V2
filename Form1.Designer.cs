@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             button1 = new Button();
+            B_BTCUSDT = new Button();
             SuspendLayout();
             // 
             // button1
@@ -41,11 +42,22 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
+            // B_BTCUSDT
+            // 
+            B_BTCUSDT.Location = new Point(12, 41);
+            B_BTCUSDT.Name = "B_BTCUSDT";
+            B_BTCUSDT.Size = new Size(75, 23);
+            B_BTCUSDT.TabIndex = 1;
+            B_BTCUSDT.Text = "BTCUSDT";
+            B_BTCUSDT.UseVisualStyleBackColor = true;
+            B_BTCUSDT.Click += B_BTCUSDT_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(867, 562);
+            Controls.Add(B_BTCUSDT);
             Controls.Add(button1);
             Name = "Form1";
             Text = "Form1";
@@ -55,5 +67,6 @@
         #endregion
 
         private Button button1;
+        private Button B_BTCUSDT;
     }
 }

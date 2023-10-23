@@ -13,7 +13,7 @@ namespace BOT_V2
         Market market = new Market();
         Market futureMarket = new Market("https://testnet.binancefuture.com");
         string COIN = "BTCUSDT";
-        Interval interval = Interval.ONE_MONTH; 
+        Interval interval = Interval.ONE_MONTH;
         long Time_2022 = 1640995200000;
         private void button1_Click(object sender, EventArgs e)
         {
@@ -47,6 +47,12 @@ namespace BOT_V2
             var getDataFromBinance = new GetDataFromBinance();
             //await GetDataFromBinance.Create_Coin("BTCUSDT");
             getDataFromBinance.Create_Coin("BTCUSDT");
+        }
+
+        private void B_BTCUSDT_Click(object sender, EventArgs e)
+        {
+            var f = new Grapher.GrapherForm("BTCUSDT");
+            f.Show();
         }
     }
 }
