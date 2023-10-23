@@ -93,7 +93,14 @@ namespace BOT_V2.Operations
                         999);
                 if (klineData == "[]")
                 {
-                    MessageBox.Show("Veri Boş geldi bi bok var");
+                    if (time_InUse > serverTime)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Veri Boş geldi bi bok var");
+                    }
                 }
                 var KlineData_Array = Data2Array(klineData);
                 foreach (var line in KlineData_Array)
