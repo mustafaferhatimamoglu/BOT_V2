@@ -21,6 +21,18 @@ namespace BOT_V2.Operations
         public double Taker_buy_base_asset_volume { get; set; }
         public double Taker_buy_quote_asset_volume { get; set; }
 
+        public long TIME { get; set; }
+        public double RSI_6 { get; set; }
+        public double RSI_12 { get; set; }
+        public double RSI_24 { get; set; }
+        public double KDJ_K { get; set; }
+        public double KDJ_D { get; set; }
+        public double KDJ_J { get; set; }
+        public double OBV { get; set; }
+
+
+
+
         public static List<KlineData> GetKlineData(string commandString)
         {
             List<KlineData> klineDataList = new List<KlineData>();
@@ -47,6 +59,82 @@ namespace BOT_V2.Operations
                         Number_of_trades = Convert.ToSingle(reader["Number_of_trades"]),
                         Taker_buy_base_asset_volume = Convert.ToSingle(reader["Taker_buy_base_asset_volume"]),
                         Taker_buy_quote_asset_volume = Convert.ToSingle(reader["Taker_buy_quote_asset_volume"])
+                    };
+                    klineDataList.Add(stockData);
+                }
+                reader.Close();
+            }
+            return klineDataList;
+        }
+        public static List<KlineData> GetIndicatorData_RSI(string commandString)
+        {
+            List<KlineData> klineDataList = new List<KlineData>();
+
+            using (SqlConnection connect = new SqlConnection(Database.SQLCon + ";Connect Timeout=60;Persist Security Info=True;MultipleActiveResultSets=true;"))
+            {
+                connect.Open();
+
+                SqlCommand command = new SqlCommand(commandString, connect);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    KlineData stockData = new KlineData
+                    {
+                        TIME = (long)Convert.ToDouble(reader["Time"]),
+                        RSI_6 = Convert.ToSingle(reader["RSI_6"]),
+                        RSI_12 = Convert.ToSingle(reader["RSI_12"]),
+                        RSI_24 = Convert.ToSingle(reader["RSI_24"]),
+                    };
+                    klineDataList.Add(stockData);
+                }
+                reader.Close();
+            }
+            return klineDataList;
+        }
+        public static List<KlineData> GetIndicatorData_KDJ(string commandString)
+        {
+            List<KlineData> klineDataList = new List<KlineData>();
+
+            using (SqlConnection connect = new SqlConnection(Database.SQLCon + ";Connect Timeout=60;Persist Security Info=True;MultipleActiveResultSets=true;"))
+            {
+                connect.Open();
+
+                SqlCommand command = new SqlCommand(commandString, connect);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    KlineData stockData = new KlineData
+                    {
+                        TIME = (long)Convert.ToDouble(reader["Time"]),
+                        KDJ_K = Convert.ToSingle(reader["K"]),
+                        KDJ_D = Convert.ToSingle(reader["D"]),
+                        KDJ_J = Convert.ToSingle(reader["J"]),
+                    };
+                    klineDataList.Add(stockData);
+                }
+                reader.Close();
+            }
+            return klineDataList;
+        }
+        public static List<KlineData> GetIndicatorData_OBV(string commandString)
+        {
+            List<KlineData> klineDataList = new List<KlineData>();
+
+            using (SqlConnection connect = new SqlConnection(Database.SQLCon + ";Connect Timeout=60;Persist Security Info=True;MultipleActiveResultSets=true;"))
+            {
+                connect.Open();
+
+                SqlCommand command = new SqlCommand(commandString, connect);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    KlineData stockData = new KlineData
+                    {
+                        TIME = (long)Convert.ToDouble(reader["Time"]),
+                        OBV = Convert.ToSingle(reader["OBV"]),
                     };
                     klineDataList.Add(stockData);
                 }

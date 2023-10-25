@@ -15,5 +15,12 @@ namespace BOT_V2.Indicators
             //epoch = epoch.AddHours(3);
             return epoch.AddMilliseconds(binanceTimeStamp);
         }
+        public static DateTime BTS_DateTime(double binanceTimeStamp)
+        {
+            // Binance timestamp is milliseconds past epoch
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            epoch = epoch.AddHours(3);
+            return epoch.AddMilliseconds(binanceTimeStamp);
+        }
     }
 }

@@ -218,6 +218,42 @@ namespace BOT_V2.Operations
             }
             #endregion
 
+            #region OBV
+            strategyName = "OBV";
+            sqlQueryCreate = "SET ANSI_NULLS ON\r\n" +
+                "\r\n\r\n" +
+                "SET QUOTED_IDENTIFIER ON\r\n" +
+                "\r\n\r\n" +
+                "CREATE TABLE " + identifier + "_" + strategyName + "(\r\n\t" +
+                "[Time] [bigint] NOT NULL,\r\n\t" +
+                "[OBV] [decimal](25, 10) NOT NULL,\r\n\t" +
+                "CONSTRAINT [PK_" + identifier + "_" + strategyName + "] PRIMARY KEY CLUSTERED \r\n(\r\n\t" +
+                "[Time] ASC\r\n" +
+                ")WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\r\n" +
+                ") ON [PRIMARY]\r\n";
+            Database.SQL_query(sqlQueryCreate);
+
+            counter = 0;
+            try
+            {
+                Database.SQL_query("delete  from " + identifier + "_" + strategyName + " where [Time] IN (\r\n" +
+                    "select TOP 1 [Time] from " + identifier + "_" + strategyName + " \r\n" +
+                    "order by [Time] desc )");
+                var a1 = Database.SQL_query("select COUNT(*) from " + identifier + "_" + strategyName);
+                counter = System.Convert.ToInt32(a1.Rows[0][0]); // a1.Rows[0][0]
+            }
+            catch (Exception) { }
+
+            var a4 = Indicators.OBV.Calculate(sqlKlineData_ALL);
+            for (; counter < sqlKlineData_ALL.Rows.Count; counter++)
+            {
+                var sqlQuery3 = "" +
+                    "INSERT INTO " + identifier + "_" + strategyName + " ([Time],[OBV])VALUES\r\n" +
+                    "('" + sqlKlineData_ALL.Rows[counter]["Kline_close_time"] + "','" + a4.OBV[counter].ToString("0." + new string('#', 339)) + "')";
+                Database.SQL_query(sqlQuery3);
+            }
+            #endregion
+
         }
         void CreateTable(string identifier)
         {
