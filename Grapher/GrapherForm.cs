@@ -18,8 +18,12 @@ namespace BOT_V2.Grapher
     public partial class GrapherForm : Form
     {
         FormsPlot[] FormsPlots;
-        SignalPlotXY coinPrice_High = new();
-        SignalPlotXY coinPrice_Low = new();
+        //SignalPlotXY coinPrice_High = new();
+        //SignalPlotXY coinPrice_Low = new(); 
+        SignalPlotXY[] coinPrice_High = new SignalPlotXY[13];
+        SignalPlotXY[] coinPrice_Low = new SignalPlotXY[13];
+        //double[][][] d_coinPrice = new double[3][][];
+        double[,,] d_coinPrice;// = new double[3][][];
         string[] intervals = { 
             "1m", "5m", "15m", "30m", "1h", 
             "2h", "4h", "6h", "8h", "12h",
@@ -71,11 +75,24 @@ namespace BOT_V2.Grapher
             FP_CoinPrice_MouseLeave(null, null);
             Invoke(new Action(delegate ()
             {
-                for (int CycleCount = 0; CycleCount < intervals.Count(); CycleCount++)
+                for (int count_interval = 0; count_interval < intervals.Count(); count_interval++)
                 {
+                    d_coinPrice[0,count_interval,5] = 0;
+                    string sqlQuery;
 
+                    sqlQuery = "" +
+                        "select * from " + coinName + "_" + intervals[count_interval] + " \r\n" +
+                        "order by Kline_open_time ";
+                    var klinePriceData = Operations.KlineData.GetKlineData(sqlQuery);
+                    for (int counter_klinePriceData = 0; counter_klinePriceData < klinePriceData.Count; counter_klinePriceData++)
+                    {
+                        //time_1m[i] = (COMMON.BinanceAuxiliary.BinanceTimeStampToUtcDateTime(sqlData[i].Kline_close_time)).ToOADate();
+                        //coinPrice_1m_High[i] = sqlData[i].High_price;
+                        //coinPrice_1m_Low[i] = sqlData[i].Low_price;
+                        //d_coinPrice[count_interval][0][counter_klinePriceData] = 5;
+                    }
                 }
-            }
+            }));
             //Invoke(new Action(delegate ()
             //{
             //    string sqlQuery;
