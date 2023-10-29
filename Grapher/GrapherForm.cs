@@ -109,9 +109,14 @@ namespace BOT_V2.Grapher
 
 
         }
-        void CreateSignalPoints()
-        {
 
+        
+        void DrawVerticalLine_All(double gelen)
+        {
+            foreach (var item in FormsPlots)
+            {
+                item.Plot.AddVerticalLine(gelen);
+            }
         }
 
         private void Button_Next_Clicked(object? sender, EventArgs e)
@@ -168,12 +173,29 @@ namespace BOT_V2.Grapher
             (double coordinateX, double coordinateY) = FP_CoinPrice.GetMouseCoordinates();
             Crosshair.X = coordinateX;
             Crosshair.Y = coordinateY;
+
+            foreach (var item in Crosshair_Indicators)
+            {
+                item.X = coordinateX;
+            }
+            for (int i = 1; i < FormsPlots.Count(); i++)
+            {
+                FormsPlots[i].Refresh(lowQuality: true, skipIfCurrentlyRendering: true);
+            }
             FP_CoinPrice.Refresh(lowQuality: true, skipIfCurrentlyRendering: true);
         }
 
         private void FP_CoinPrice_MouseLeave(object? sender, EventArgs e)
         {
             Crosshair.IsVisible = false;
+            foreach (var item in Crosshair_Indicators)
+            {
+                item.IsVisible = false;
+            }
+            for (int i = 1; i < FormsPlots.Count(); i++)
+            {
+                FormsPlots[i].Refresh(lowQuality: true, skipIfCurrentlyRendering: true);
+            }
             FP_CoinPrice.Refresh(lowQuality: true, skipIfCurrentlyRendering: true);
         }
 
@@ -182,12 +204,16 @@ namespace BOT_V2.Grapher
         private void FP_CoinPrice_MouseEnter(object? sender, EventArgs e)
         {
             Crosshair.IsVisible = true;
+            foreach (var item in Crosshair_Indicators)
+            {
+                item.IsVisible = true;
+            }
         }
 
         private void FP_CoinPrice_Load(object? sender, EventArgs e)
         {
             Crosshair = FP_CoinPrice.Plot.AddCrosshair(0, 0);
-            Crosshair_Indicators= new Crosshair[FormsPlots.Count()-1];
+            Crosshair_Indicators = new Crosshair[FormsPlots.Count() - 1];
             for (int i = 0; i < FormsPlots.Count(); i++)
             {
                 if (FormsPlots[i] == FP_CoinPrice)
@@ -196,7 +222,7 @@ namespace BOT_V2.Grapher
                 }
                 else
                 {
-                    Crosshair_Indicators[i-1]= FormsPlots[i].Plot.AddCrosshair(0, 0);
+                    Crosshair_Indicators[i - 1] = FormsPlots[i].Plot.AddCrosshair(0, 0);
                 }
             }
             FP_CoinPrice_MouseLeave(null, null);
@@ -334,9 +360,91 @@ namespace BOT_V2.Grapher
                     Indicator_OBV_24[count_interval].IsVisible = false;
                 }
 
+
+                CreateSignalPoints();
+                UseSignalPoints();
+
+
             }
             ));
         }
+        int interval_position = 4; //1 hour
+        List<double> HotSpots_X = new();
+        List<double> HotSpots_Y = new();
+        List<double> HotSpots_X_end = new();
+        List<double> HotSpots_Y_end = new();
+        List<string> HotSpots_end_status = new();
+        int SuccessCount = 0;
+        int FailCount = 0;
+        void CreateSignalPoints()
+        {
+            for (int i = 50; i < d_indicator_RSI[4, 0].Count(); i++)
+            {
+                if (
+                    d_indicator_RSI[4, 1][i - 1] < 30 &&
+                    d_indicator_RSI[4, 1][i] > 30
+                    )
+                {
+                    int t1 = Array.IndexOf(d_coinPrice[0, 0], d_coinPrice[4, 0][i]);
+                    HotSpots_X.Add(d_coinPrice[0, 0][t1]);
+
+                    DrawVerticalLine_All(d_coinPrice[0, 0][t1]);
+                    HotSpots_Y.Add(d_coinPrice[0, 2][t1]);
+                }
+            }
+        }
+        void UseSignalPoints()
+        {
+            double pnl = 0;
+            double getProfit = 1.01;
+            double stopLoss = 0.99;
+            for (int i = 0; i < HotSpots_X.Count; i++)
+            {
+                int t1 = Array.IndexOf(d_coinPrice[0, 0], HotSpots_X[i]);
+                for (int j = t1; j < d_coinPrice[0, 0].Count(); j++)
+                {
+                    if (HotSpots_Y[i] * stopLoss >= d_coinPrice[0, 2][j])
+                    {
+                        HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
+                        HotSpots_Y_end.Add(d_coinPrice[0, 2][j]);
+                        pnl -= 1 - stopLoss;
+                        HotSpots_end_status.Add("Loss");
+                        FailCount++;
+                        break;
+                    }
+                    else if (HotSpots_Y[i] * getProfit <= d_coinPrice[0, 1][j])
+                    {
+                        HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
+                        HotSpots_Y_end.Add(d_coinPrice[0, 1][j]);
+                        pnl += getProfit - 1;
+                        HotSpots_end_status.Add("Profit");
+                        SuccessCount++;
+                        break;
+                    }
+                }
+
+            }
+
+
+            for (int i = 0; i < HotSpots_end_status.Count; i++)
+            {
+                var rp = FP_CoinPrice.Plot.AddRectangle(
+                    xMin: HotSpots_X[i], xMax: HotSpots_X_end[i], yMin: HotSpots_Y[i], yMax: HotSpots_Y_end[i]);
+                //rp.BorderColor = Color.Blue;
+                //rp.BorderLineWidth = 3;
+                //rp.BorderLineStyle = LineStyle.Dot;
+                if (HotSpots_end_status[i] == "Profit")
+                {
+                    rp.Color = Color.FromArgb(100, Color.Green);
+                }
+                else
+                {
+                    rp.Color = Color.FromArgb(100, Color.Red);
+                }
+
+            }
+        }
+
 
         private void FP_CoinPrice_AxesChanged(object? sender, EventArgs e)
         {
