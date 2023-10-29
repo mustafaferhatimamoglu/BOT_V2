@@ -28,7 +28,9 @@ namespace BOT_V2.Operations
         public double KDJ_K { get; set; }
         public double KDJ_D { get; set; }
         public double KDJ_J { get; set; }
-        public double OBV { get; set; }
+        public double OBV_6 { get; set; }
+        public double OBV_12 { get; set; }
+        public double OBV_24 { get; set; }
 
 
 
@@ -134,7 +136,9 @@ namespace BOT_V2.Operations
                     KlineData stockData = new KlineData
                     {
                         TIME = (long)Convert.ToDouble(reader["Time"]),
-                        OBV = Convert.ToSingle(reader["OBV"]),
+                        OBV_6 = Convert.ToSingle(reader["OBV_6"]),
+                        OBV_12 = Convert.ToSingle(reader["OBV_12"]),
+                        OBV_24 = Convert.ToSingle(reader["OBV_24"]),
                     };
                     klineDataList.Add(stockData);
                 }

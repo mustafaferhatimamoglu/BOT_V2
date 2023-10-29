@@ -50,7 +50,7 @@ namespace BOT_V2.Indicators
                 }
                 catch (Exception ex)
                 {
-
+                    Auxiliary.insideCatch(ex);
                 }
 
                 counter++;

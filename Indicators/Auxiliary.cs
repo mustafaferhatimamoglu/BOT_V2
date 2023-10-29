@@ -22,5 +22,16 @@ namespace BOT_V2.Indicators
             epoch = epoch.AddHours(3);
             return epoch.AddMilliseconds(binanceTimeStamp);
         }
+        public static void insideCatch(Exception ex)
+        {
+            if (ex.Message == "Nullable object must have a value.")
+            {
+
+            }
+            else
+            {
+
+            }
+        }
     }
 }

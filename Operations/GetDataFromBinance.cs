@@ -213,11 +213,14 @@ namespace BOT_V2.Operations
             {
                 var sqlQuery3 = "" +
                     "INSERT INTO " + identifier + "_" + strategyName + " ([Time],[K],[D],[J])VALUES\r\n" +
-                    "('" + sqlKlineData_ALL.Rows[counter]["Kline_close_time"] + "','" + a3.K[counter].ToString("0." + new string('#', 339)) + "','" + a3.D[counter].ToString("0." + new string('#', 339)) + "','" + a3.J[counter].ToString("0." + new string('#', 339)) + "')";
+                    "('" + sqlKlineData_ALL.Rows[counter]["Kline_close_time"] + "','" + 
+                    a3.K[counter].ToString("0." + new string('#', 339)) + "','" + 
+                    a3.D[counter].ToString("0." + new string('#', 339)) + "','" + 
+                    a3.J[counter].ToString("0." + new string('#', 339)) +
+                    "')";
                 Database.SQL_query(sqlQuery3);
             }
             #endregion
-
             #region OBV
             strategyName = "OBV";
             sqlQueryCreate = "SET ANSI_NULLS ON\r\n" +
@@ -226,7 +229,9 @@ namespace BOT_V2.Operations
                 "\r\n\r\n" +
                 "CREATE TABLE " + identifier + "_" + strategyName + "(\r\n\t" +
                 "[Time] [bigint] NOT NULL,\r\n\t" +
-                "[OBV] [decimal](25, 10) NOT NULL,\r\n\t" +
+                "[OBV_6] [decimal](25, 10) NOT NULL,\r\n\t" +
+                "[OBV_12] [decimal](25, 10) NOT NULL,\r\n\t" +
+                "[OBV_24] [decimal](25, 10) NOT NULL,\r\n\t" +
                 "CONSTRAINT [PK_" + identifier + "_" + strategyName + "] PRIMARY KEY CLUSTERED \r\n(\r\n\t" +
                 "[Time] ASC\r\n" +
                 ")WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]\r\n" +
@@ -248,8 +253,12 @@ namespace BOT_V2.Operations
             for (; counter < sqlKlineData_ALL.Rows.Count; counter++)
             {
                 var sqlQuery3 = "" +
-                    "INSERT INTO " + identifier + "_" + strategyName + " ([Time],[OBV])VALUES\r\n" +
-                    "('" + sqlKlineData_ALL.Rows[counter]["Kline_close_time"] + "','" + a4.OBV[counter].ToString("0." + new string('#', 339)) + "')";
+                    "INSERT INTO " + identifier + "_" + strategyName + " ([Time],[OBV_6],[OBV_12],[OBV_24])VALUES\r\n" +
+                    "('" + sqlKlineData_ALL.Rows[counter]["Kline_close_time"] + "','" + 
+                    a4.OBV_6[counter].ToString("0." + new string('#', 339))+ "','" +
+                    a4.OBV_12[counter].ToString("0." + new string('#', 339)) + "','" +
+                    a4.OBV_24[counter].ToString("0." + new string('#', 339)) +
+                    "')";
                 Database.SQL_query(sqlQuery3);
             }
             #endregion

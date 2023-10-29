@@ -13,7 +13,9 @@ namespace BOT_V2.Indicators
     {
         public struct Result
         {
-            public double[] OBV;
+            public double[] OBV_6;
+            public double[] OBV_12;
+            public double[] OBV_24;
         };
         public static Result Calculate(DataTable gelen)
         {
@@ -30,24 +32,41 @@ namespace BOT_V2.Indicators
                     Volume = Convert.ToDecimal(gelen.Rows[i]["Volume"]),
                 });
             }
-            var a1 = quotes2.GetObv();
+            var a6 = quotes2.GetObv(smaPeriods: 6);
+            var a12 = quotes2.GetObv(smaPeriods: 12);
+            var a24 = quotes2.GetObv(smaPeriods: 24);
 
             Result result = new Result();
-            result.OBV = new double[a1.Count()];
+            result.OBV_6 = new double[a6.Count()];
+            result.OBV_12 = new double[a6.Count()];
+            result.OBV_24 = new double[a6.Count()];
             int counter = 0;
-            foreach (var item in a1)
+            //foreach (var item in a1)
+            //{
+            //    try
+            //    {
+            //        //result.TIME[counter] = (double)item.Date;
+            //        result.OBV[counter] = (double)item.Obv;
+            //    }
+            //    catch (Exception ex)
+            //    {
+
+            //    }
+
+            //    counter++;
+            //}
+            for (int i = 0; i < a6.Count(); i++)
             {
                 try
                 {
-                    //result.TIME[counter] = (double)item.Date;
-                    result.OBV[counter] = (double)item.Obv;
+                    result.OBV_6[i] = (double)a6.ElementAt(i).ObvSma;
+                    result.OBV_12[i] = (double)a12.ElementAt(i).ObvSma;
+                    result.OBV_24[i] = (double)a24.ElementAt(i).ObvSma;
                 }
                 catch (Exception ex)
                 {
-
+                    Auxiliary.insideCatch(ex);
                 }
-
-                counter++;
             }
             return result;
         }

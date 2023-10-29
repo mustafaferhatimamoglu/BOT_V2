@@ -15,7 +15,7 @@ namespace BOT_V2.Operations
     internal class Database
     {
         public static string SQLCon = "Data Source=" + "localhost" +
-                    "; Initial Catalog=" + "BINANCE_V18" +
+                    "; Initial Catalog=" + "BINANCE_V19" +
                     "; USER ID=" + "sa" +
                     ";PASSWORD=" + "sapass" + "";
 

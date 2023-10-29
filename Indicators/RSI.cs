@@ -45,12 +45,13 @@ namespace BOT_V2.Indicators
             {
                 try
                 {
-                    result.RSI_6[i] = (double)a6.ElementAt(i).Rsi;
+                    result.RSI_6[i] = Convert.ToDouble( a6.ElementAt(i).Rsi);
                     result.RSI_12[i] = (double)a12.ElementAt(i).Rsi;
                     result.RSI_24[i] = (double)a24.ElementAt(i).Rsi;
                 }
                 catch (Exception ex)
                 {
+                    Auxiliary.insideCatch(ex);
                 }
             }
             return result;
