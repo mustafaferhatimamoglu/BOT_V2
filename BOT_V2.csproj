@@ -15,4 +15,13 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Grapher\GrapherForm_V3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Grapher\GrapherForm_V2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

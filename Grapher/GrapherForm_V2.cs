@@ -16,7 +16,7 @@ using System.Windows.Forms;
 
 namespace BOT_V2.Grapher
 {
-    public partial class GrapherForm : Form
+    public partial class GrapherForm_V2 : Form
     {
         FormsPlot[] FormsPlots;
         //SignalPlotXY coinPrice_High = new();
@@ -46,7 +46,7 @@ namespace BOT_V2.Grapher
             "1d", "3d", "1w" };
 
         string coinName;
-        public GrapherForm(string coinName)
+        public GrapherForm_V2(string coinName)
         {
             InitializeComponent();
             this.coinName = coinName;
@@ -110,7 +110,7 @@ namespace BOT_V2.Grapher
 
         }
 
-
+        
         void DrawVerticalLine_All(double gelen)
         {
             foreach (var item in FormsPlots)
@@ -361,21 +361,10 @@ namespace BOT_V2.Grapher
                 }
 
 
+                CreateSignalPoints();
+                UseSignalPoints();
 
 
-
-                DataTable MyTable = new DataTable(); // 1
-                for (int i_RSI_limit = 10; i_RSI_limit < 35; i_RSI_limit++)
-                {
-                    CreateSignalPoints(i_RSI_limit);
-                    for (double i_getProfit = 1.01; i_getProfit < 1.15; i_getProfit += 0.01)
-                    {
-                        for (double i_stopLoss = 0; i_stopLoss < 0.80; i_stopLoss -= 0.01)
-                        {
-                            UseSignalPoints(i_getProfit, i_stopLoss);
-                        }
-                    }
-                }
             }
             ));
         }
@@ -387,15 +376,15 @@ namespace BOT_V2.Grapher
         List<string> HotSpots_end_status = new();
         int SuccessCount = 0;
         int FailCount = 0;
-        void CreateSignalPoints(int RSI_limit)
+        void CreateSignalPoints()
         {
             for (int i = 50; i < d_indicator_RSI[4, 0].Count(); i++)
             {
                 if (
-                    d_indicator_RSI[4, 1][i - 1] < RSI_limit &&
-                    d_indicator_RSI[4, 1][i] > RSI_limit &&
+                    d_indicator_RSI[4, 1][i - 1] < 30 &&
+                    d_indicator_RSI[4, 1][i] > 30  &&
 
-                    d_indicator_KDJ[4, 2][i] > d_indicator_KDJ[4, 1][i] &&
+                    d_indicator_KDJ[4, 2][i]> d_indicator_KDJ[4, 1][i] &&
                     d_indicator_KDJ[4, 1][i] > d_indicator_KDJ[4, 3][i]
                     )
                 {
@@ -407,9 +396,11 @@ namespace BOT_V2.Grapher
                 }
             }
         }
-        void UseSignalPoints(double getProfit, double stopLoss)
+        void UseSignalPoints()
         {
             double pnl = 0;
+            double getProfit = 1.01;
+            double stopLoss = 0.99;
             for (int i = 0; i < HotSpots_X.Count; i++)
             {
                 int t1 = Array.IndexOf(d_coinPrice[0, 0], HotSpots_X[i]);
@@ -434,11 +425,17 @@ namespace BOT_V2.Grapher
                         break;
                     }
                 }
+
             }
+
+
             for (int i = 0; i < HotSpots_end_status.Count; i++)
             {
                 var rp = FP_CoinPrice.Plot.AddRectangle(
                     xMin: HotSpots_X[i], xMax: HotSpots_X_end[i], yMin: HotSpots_Y[i], yMax: HotSpots_Y_end[i]);
+                //rp.BorderColor = Color.Blue;
+                //rp.BorderLineWidth = 3;
+                //rp.BorderLineStyle = LineStyle.Dot;
                 if (HotSpots_end_status[i] == "Profit")
                 {
                     rp.Color = Color.FromArgb(100, Color.Green);
