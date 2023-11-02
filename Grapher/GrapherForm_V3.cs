@@ -374,7 +374,7 @@ namespace BOT_V2.Grapher
                 MyTable.Columns.Add("FailCount", typeof(int));
                 MyTable.Columns.Add("S/F", typeof(double));
                 //MyTable.Columns.Add("Name", typeof(string));
-                for (int interval_position = 12; interval_position < 1; interval_position--)
+                for (int interval_position = 12; interval_position > -1; interval_position--)
                 {
                     for (int RSI_limit = 10; RSI_limit < 35; RSI_limit++)
                     {
@@ -383,8 +383,6 @@ namespace BOT_V2.Grapher
                         List<double> HotSpots_X_end = new();
                         List<double> HotSpots_Y_end = new();
                         List<string> HotSpots_end_status = new();
-                        int SuccessCount = 0;
-                        int FailCount = 0;
                         for (int i = 50; i < d_indicator_RSI[interval_position, 0].Count(); i++)
                         {
                             if (
@@ -406,6 +404,8 @@ namespace BOT_V2.Grapher
                         {
                             for (double stopLoss = 0.98; stopLoss > 0.80; stopLoss -= 0.01)
                             {
+                                int SuccessCount = 0;
+                                int FailCount = 0;
                                 double pnl = 0;
                                 for (int i = 0; i < HotSpots_X.Count; i++)
                                 {
@@ -432,7 +432,7 @@ namespace BOT_V2.Grapher
                                         }
                                     }
                                 }
-                                 MyTable.Rows.Add(interval_position, RSI_limit, getProfit, stopLoss,pnl, SuccessCount, FailCount,SuccessCount/FailCount);
+                                 MyTable.Rows.Add(interval_position, RSI_limit, getProfit, stopLoss,pnl, SuccessCount, FailCount);
                             }
                         }
                     }
