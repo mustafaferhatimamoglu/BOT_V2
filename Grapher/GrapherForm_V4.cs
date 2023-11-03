@@ -16,7 +16,7 @@ using System.Windows.Forms;
 
 namespace BOT_V2.Grapher
 {
-    public partial class GrapherForm_V3 : Form
+    public partial class GrapherForm_V4 : Form
     {
         FormsPlot[] FormsPlots;
         //SignalPlotXY coinPrice_High = new();
@@ -46,7 +46,7 @@ namespace BOT_V2.Grapher
             "1d", "3d", "1w" };
 
         string coinName;
-        public GrapherForm_V3(string coinName)
+        public GrapherForm_V4(string coinName)
         {
             InitializeComponent();
             this.coinName = coinName;
@@ -206,50 +206,7 @@ namespace BOT_V2.Grapher
                 item.IsVisible = true;
             }
         }
-        private void FP_CoinPrice_AxesChanged(object? sender, EventArgs e)
-        {
-            foreach (var fp in FormsPlots)
-            {
-                if (fp == FP_CoinPrice)
-                    continue;
-                if (fp == FP_RSI)
-                {
-                    var newAxisLimits = FP_CoinPrice.Plot.GetAxisLimits();
-                    var x_newAxisLimits = FP_CoinPrice.Plot.GetAxisLimits(0, 1);
-                    x_newAxisLimits = x_newAxisLimits.WithY(0, 100);
-                    // disable events briefly to avoid an infinite loop
-                    fp.Configuration.AxesChangedEventEnabled = false;
-                    fp.Plot.SetAxisLimits(x_newAxisLimits);
-                    fp.Render();
-                    fp.Configuration.AxesChangedEventEnabled = true;
-                }
-                if (fp == FP_KDJ)
-                {
-                    var newAxisLimits = FP_CoinPrice.Plot.GetAxisLimits();
-                    var x_newAxisLimits = FP_CoinPrice.Plot.GetAxisLimits(0, 1);
-                    x_newAxisLimits = x_newAxisLimits.WithY(0, 100);
-                    // disable events briefly to avoid an infinite loop
-                    fp.Configuration.AxesChangedEventEnabled = false;
-                    fp.Plot.SetAxisLimits(x_newAxisLimits);
-                    fp.Render();
-                    fp.Configuration.AxesChangedEventEnabled = true;
-                }
-                if (fp == FP_OBV)
-                {
-                    var newAxisLimits = FP_CoinPrice.Plot.GetAxisLimits();
-                    var x_newAxisLimits = FP_CoinPrice.Plot.GetAxisLimits(0, 1);
 
-                    //x_newAxisLimits = x_newAxisLimits.WithY(-1000000, 1000000);
-                    // disable events briefly to avoid an infinite loop
-                    fp.Configuration.AxesChangedEventEnabled = false;
-                    //fp.Plot.SetAxisLimits(x_newAxisLimits);
-                    //fp.Plot.SetAxisLimitsX(x_newAxisLimits);
-                    fp.Plot.SetAxisLimitsX(x_newAxisLimits.XMin, x_newAxisLimits.XMax);
-                    fp.Render();
-                    fp.Configuration.AxesChangedEventEnabled = true;
-                }
-            }
-        }
         private void FP_CoinPrice_Load(object? sender, EventArgs e)
         {
             Crosshair = FP_CoinPrice.Plot.AddCrosshair(0, 0);
@@ -562,5 +519,71 @@ namespace BOT_V2.Grapher
         //}
 
 
+        private void FP_CoinPrice_AxesChanged(object? sender, EventArgs e)
+        {
+            foreach (var fp in FormsPlots)
+            {
+                if (fp == FP_CoinPrice)
+                    continue;
+                if (fp == FP_RSI)
+                {
+                    var newAxisLimits = FP_CoinPrice.Plot.GetAxisLimits();
+                    var x_newAxisLimits = FP_CoinPrice.Plot.GetAxisLimits(0, 1);
+                    x_newAxisLimits = x_newAxisLimits.WithY(0, 100);
+                    // disable events briefly to avoid an infinite loop
+                    fp.Configuration.AxesChangedEventEnabled = false;
+                    fp.Plot.SetAxisLimits(x_newAxisLimits);
+                    fp.Render();
+                    fp.Configuration.AxesChangedEventEnabled = true;
+                }
+                if (fp == FP_KDJ)
+                {
+                    var newAxisLimits = FP_CoinPrice.Plot.GetAxisLimits();
+                    var x_newAxisLimits = FP_CoinPrice.Plot.GetAxisLimits(0, 1);
+                    x_newAxisLimits = x_newAxisLimits.WithY(0, 100);
+                    // disable events briefly to avoid an infinite loop
+                    fp.Configuration.AxesChangedEventEnabled = false;
+                    fp.Plot.SetAxisLimits(x_newAxisLimits);
+                    fp.Render();
+                    fp.Configuration.AxesChangedEventEnabled = true;
+                }
+                if (fp == FP_OBV)
+                {
+                    var newAxisLimits = FP_CoinPrice.Plot.GetAxisLimits();
+                    var x_newAxisLimits = FP_CoinPrice.Plot.GetAxisLimits(0, 1);
+
+                    //x_newAxisLimits = x_newAxisLimits.WithY(-1000000, 1000000);
+                    // disable events briefly to avoid an infinite loop
+                    fp.Configuration.AxesChangedEventEnabled = false;
+                    //fp.Plot.SetAxisLimits(x_newAxisLimits);
+                    //fp.Plot.SetAxisLimitsX(x_newAxisLimits);
+                    fp.Plot.SetAxisLimitsX(x_newAxisLimits.XMin, x_newAxisLimits.XMax);
+                    fp.Render();
+                    fp.Configuration.AxesChangedEventEnabled = true;
+                }
+                //if (fp == formsPlot2)
+                //{
+                //    var newAxisLimits = formsPlot1.Plot.GetAxisLimits();
+                //    var x_newAxisLimits = formsPlot1.Plot.GetAxisLimits(0, 1);
+                //    x_newAxisLimits = x_newAxisLimits.WithY(0, 100);
+                //    // disable events briefly to avoid an infinite loop
+                //    fp.Configuration.AxesChangedEventEnabled = false;
+                //    fp.Plot.SetAxisLimits(x_newAxisLimits);
+                //    fp.Render();
+                //    fp.Configuration.AxesChangedEventEnabled = true;
+                //}
+                //if (fp == formsPlot3)
+                //{
+                //    var newAxisLimits = formsPlot1.Plot.GetAxisLimits();
+                //    var x_newAxisLimits = formsPlot1.Plot.GetAxisLimits(0, 1);
+                //    x_newAxisLimits = x_newAxisLimits.WithY(-20, 120);
+                //    // disable events briefly to avoid an infinite loop
+                //    fp.Configuration.AxesChangedEventEnabled = false;
+                //    fp.Plot.SetAxisLimits(x_newAxisLimits);
+                //    fp.Render();
+                //    fp.Configuration.AxesChangedEventEnabled = true;
+                //}
+            }
+        }
     }
 }
