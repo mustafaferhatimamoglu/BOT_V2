@@ -50,6 +50,7 @@ namespace BOT_V2.Grapher
         double RSI_limit;
         double getProfit;
         double stopLoss;
+        int stepSize = 3;
         bool noGraph;
         public GrapherForm_V4(string coinName, int interval_position, double RSI_limit, double getProfit, double stopLoss)
         {
@@ -59,6 +60,7 @@ namespace BOT_V2.Grapher
             this.RSI_limit = RSI_limit;
             this.getProfit = getProfit;
             this.stopLoss = stopLoss;
+            this.noGraph = false;
 
 
             FormsPlots = new FormsPlot[] { FP_CoinPrice, FP_RSI, FP_KDJ, FP_OBV };
@@ -381,14 +383,14 @@ namespace BOT_V2.Grapher
                 MyTable.Columns.Add("RSI_limit", typeof(int));
                 MyTable.Columns.Add("getProfit", typeof(double));
                 MyTable.Columns.Add("stopLoss", typeof(double));
+                MyTable.Columns.Add("stepSize", typeof(int));
                 MyTable.Columns.Add("pnl", typeof(double));
                 MyTable.Columns.Add("SuccessCount", typeof(int));
                 MyTable.Columns.Add("FailCount", typeof(int));
-                MyTable.Columns.Add("S/F", typeof(double));
-                //MyTable.Columns.Add("Name", typeof(string));
-                for (int interval_position = 12; interval_position > 0; interval_position--)
+                MyTable.Columns.Add("NeutralCount", typeof(int));
+                interval_position = 4;//for (int interval_position = 9; interval_position > 0; interval_position--)
                 {
-                    for (int RSI_limit = 10; RSI_limit < 35; RSI_limit++)
+                    for (int RSI_limit = 20; RSI_limit < 35; RSI_limit++)
                     {
                         List<double> HotSpots_X = new();
                         List<double> HotSpots_Y = new();
@@ -414,79 +416,108 @@ namespace BOT_V2.Grapher
                                 }
                             }
                         }
-                        for (double getProfit = 1.02; getProfit < 1.20; getProfit += 0.01)
+                        for (double getProfit = 1.02; getProfit < 1.10; getProfit += 0.01)
                         {
-                            for (double stopLoss = 0.98; stopLoss > 0.80; stopLoss -= 0.01)
+                            double stopLoss = 0.81;//for (double stopLoss = 0.98; stopLoss > 0.80; stopLoss -= 0.01)
                             {
-                                int SuccessCount = 0;
-                                int FailCount = 0;
-                                int NeutralCount = 0;
-                                double pnl = 0;
-                                for (int i = 0; i < HotSpots_X.Count; i++)
+                                for (int stepSize = 60; stepSize < (5000); stepSize = stepSize + 100)
+                                //stepSize = 60 * 60;
                                 {
-                                    int t1 = Array.IndexOf(d_coinPrice[0, 0], HotSpots_X[i]);
-                                    for (int j = t1; j < d_coinPrice[0, 0].Count(); j++)
-                                    {
-                                        if (HotSpots_Y[i] * stopLoss >= d_coinPrice[0, 2][j])
-                                        {
-                                            if (noGraph == false)
-                                            {
-                                                HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
-                                                HotSpots_Y_end.Add(d_coinPrice[0, 2][j]);
-                                            }
-                                            pnl -= ((1.0d - stopLoss) * 100.0d) + 1.0d;
-                                            HotSpots_end_status.Add("Loss");
-                                            FailCount++;
-                                            break;
-                                        }
-                                        else if (HotSpots_Y[i] * getProfit <= d_coinPrice[0, 1][j])
-                                        {
-                                            if (noGraph == false)
-                                            {
-                                                HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
-                                                HotSpots_Y_end.Add(d_coinPrice[0, 1][j]);
-                                            }
-                                            pnl += ((getProfit - 1.0d) * 100.0d) - 1.0d;
-                                            HotSpots_end_status.Add("Profit");
-                                            SuccessCount++;
-                                            break;
-                                        }
-                                        else if (j - t1 > 20)
-                                        {
-                                            if (noGraph == false)
-                                            {
-                                                HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
-                                                HotSpots_Y_end.Add(d_coinPrice[0, 2][j]);
-                                            }
-                                            pnl += (((d_coinPrice[0, 2][i] - d_coinPrice[0, 2][j]) / d_coinPrice[0, 2][i]) * 100) - 1;
-                                            HotSpots_end_status.Add("Neutral");
-                                            NeutralCount++;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (noGraph == false)
-                                {
-                                    for (int i = 0; i < HotSpots_end_status.Count; i++)
-                                    {
-                                        var rp = FP_CoinPrice.Plot.AddRectangle(
-                                            xMin: HotSpots_X[i], xMax: HotSpots_X_end[i], yMin: HotSpots_Y[i], yMax: HotSpots_Y_end[i]);
-                                        if (HotSpots_end_status[i] == "Profit")
-                                        {
-                                            rp.Color = Color.FromArgb(100, Color.Green);
-                                        }
-                                        else
-                                        {
-                                            rp.Color = Color.FromArgb(100, Color.Red);
-                                        }
 
+
+                                    int SuccessCount = 0;
+                                    int FailCount = 0;
+                                    int NeutralCount = 0;
+                                    double pnl = 0;
+                                    for (int i = 0; i < HotSpots_X.Count; i++)
+                                    {
+                                        int t1 = Array.IndexOf(d_coinPrice[0, 0], HotSpots_X[i]);
+                                        for (int j = t1; j < d_coinPrice[0, 0].Count(); j++)
+                                        {
+                                            if (HotSpots_Y[i] * stopLoss >= d_coinPrice[0, 2][j])
+                                            {
+                                                if (noGraph == false)
+                                                {
+                                                    HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
+                                                    HotSpots_Y_end.Add(d_coinPrice[0, 2][j]);
+                                                }
+                                                //pnl -= ((1.0d - stopLoss) * 100.0d) + 1.0d;
+                                                double pnl_Diff = (((d_coinPrice[0, 2][t1] - d_coinPrice[0, 2][j]) / d_coinPrice[0, 2][j]) * 100) - 1;
+                                                pnl += pnl_Diff;
+                                                HotSpots_end_status.Add("Loss");
+                                                FailCount++;
+                                                break;
+                                            }
+                                            else if (HotSpots_Y[i] * getProfit <= d_coinPrice[0, 1][j])
+                                            {
+                                                if (noGraph == false)
+                                                {
+                                                    HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
+                                                    HotSpots_Y_end.Add(d_coinPrice[0, 1][j]);
+                                                }
+                                                //pnl += ((getProfit - 1.0d) * 100.0d) - 1.0d;
+                                                double pnl_Diff = (((d_coinPrice[0, 2][t1] - d_coinPrice[0, 2][j]) / d_coinPrice[0, 2][j]) * 100) - 1;
+                                                pnl += pnl_Diff;
+                                                HotSpots_end_status.Add("Profit");
+                                                SuccessCount++;
+                                                break;
+                                            }
+                                            else if (j - t1 > stepSize)
+                                            {
+                                                if (noGraph == false)
+                                                {
+                                                    HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
+                                                    HotSpots_Y_end.Add(d_coinPrice[0, 2][j]);
+                                                }
+                                                double a1 = (d_coinPrice[0, 2][j]);
+                                                double a2 = (d_coinPrice[0, 2][t1]);
+                                                double pnl_Diff = (((d_coinPrice[0, 2][t1] - d_coinPrice[0, 2][j]) / d_coinPrice[0, 2][j]) * 100) - 1;
+                                                pnl += pnl_Diff;
+                                                if (pnl_Diff >= 0.0)
+                                                {
+                                                    HotSpots_end_status.Add("Neutral+");
+                                                }
+                                                else// (pnl_Diff < 0.0)
+                                                {
+                                                    HotSpots_end_status.Add("Neutral-");
+                                                }
+                                                NeutralCount++;
+                                                break;
+                                            }
+                                        }
                                     }
+                                    if (noGraph == false)
+                                    {
+                                        for (int i = 0; i < HotSpots_end_status.Count; i++)
+                                        {
+                                            var rp = FP_CoinPrice.Plot.AddRectangle(
+                                                xMin: HotSpots_X[i], xMax: HotSpots_X_end[i], yMin: HotSpots_Y[i], yMax: HotSpots_Y_end[i]);
+                                            if (HotSpots_end_status[i] == "Profit")
+                                            {
+                                                rp.Color = Color.FromArgb(100, Color.Green);
+                                            }
+                                            else if (HotSpots_end_status[i] == "Loss")
+                                            {
+                                                rp.Color = Color.FromArgb(100, Color.Red);
+                                            }
+                                            else if (HotSpots_end_status[i] == "Neutral+")
+                                            {
+                                                rp.Color = Color.FromArgb(100, Color.LightGreen);
+                                            }
+                                            else if (HotSpots_end_status[i] == "Neutral-")
+                                            {
+                                                rp.Color = Color.FromArgb(100, Color.IndianRed);
+                                            }
+
+                                        }
+                                    }
+                                    MyTable.Rows.Add(interval_position, RSI_limit, getProfit, stopLoss, stepSize, pnl, SuccessCount, FailCount, NeutralCount);
                                 }
-                                MyTable.Rows.Add(interval_position, RSI_limit, getProfit, stopLoss, pnl, SuccessCount, FailCount, NeutralCount);
                             }
                         }
                     }
-                    Save(MyTable, interval_position.ToString());
+                    //Save(MyTable, interval_position.ToString());
+                    Save2(MyTable, interval_position.ToString());
                 }
 
                 //int asd = 0;
@@ -508,6 +539,24 @@ namespace BOT_V2.Grapher
             }
 
             File.WriteAllText(name + "test.csv", sb.ToString());
+            //dt.Clear();
+        }
+        void Save2(DataTable dt, string name)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            IEnumerable<string> columnNames = dt.Columns.Cast<DataColumn>().
+                                              Select(column => column.ColumnName);
+            sb.AppendLine(string.Join(";", columnNames));
+
+            foreach (DataRow row in dt.Rows)
+            {
+                IEnumerable<string> fields = row.ItemArray.Select(field =>
+                  string.Concat("\"", field.ToString().Replace("\"", "\"\""), "\""));
+                sb.AppendLine(string.Join(";", fields));
+            }
+
+            File.WriteAllText(name + "test2.csv", sb.ToString());
             dt.Clear();
         }
 
