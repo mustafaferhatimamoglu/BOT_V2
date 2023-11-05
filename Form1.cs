@@ -54,5 +54,22 @@ namespace BOT_V2
             var f = new Grapher.GrapherForm_V3("BTCUSDT");
             f.Show();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string coinName = TB_coinName.Text;
+            int interval_position = LB_interval.SelectedIndex;
+            double RSI_limit = (double)NUD_RSI.Value;
+            double getProfit = (double)NUD_getProfit.Value;
+            double stopLoss = (double)NUD_stopLoss.Value;
+            var f = new Grapher.GrapherForm_V4(coinName, interval_position, RSI_limit, getProfit, stopLoss);
+            f.Show();
+        }
+
+        private void Button_Setup_Click(object sender, EventArgs e)
+        {
+            var f = new Grapher.GrapherForm_V4("BTCUSDT",true);
+            f.Show();
+        }
     }
 }

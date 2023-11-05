@@ -434,8 +434,7 @@ namespace BOT_V2.Grapher
                         break;
                     }
                 }
-            }
-            for (int i = 0; i < HotSpots_end_status.Count; i++)
+            }                 for (int i = 0; i < HotSpots_end_status.Count; i++)
             {
                 var rp = FP_CoinPrice.Plot.AddRectangle(
                     xMin: HotSpots_X[i], xMax: HotSpots_X_end[i], yMin: HotSpots_Y[i], yMax: HotSpots_Y_end[i]);

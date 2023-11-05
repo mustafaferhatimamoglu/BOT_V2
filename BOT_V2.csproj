@@ -16,6 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Grapher\GrapherForm_V3 - Copy.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Grapher\GrapherForm_V3.cs">
       <SubType>Form</SubType>
     </Compile>

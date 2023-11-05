@@ -46,10 +46,20 @@ namespace BOT_V2.Grapher
             "1d", "3d", "1w" };
 
         string coinName;
-        public GrapherForm_V4(string coinName)
+        int interval_position;
+        double RSI_limit;
+        double getProfit;
+        double stopLoss;
+        bool noGraph;
+        public GrapherForm_V4(string coinName, int interval_position, double RSI_limit, double getProfit, double stopLoss)
         {
             InitializeComponent();
             this.coinName = coinName;
+            this.interval_position = interval_position;
+            this.RSI_limit = RSI_limit;
+            this.getProfit = getProfit;
+            this.stopLoss = stopLoss;
+
 
             FormsPlots = new FormsPlot[] { FP_CoinPrice, FP_RSI, FP_KDJ, FP_OBV };
             foreach (var fp in FormsPlots)
@@ -65,6 +75,14 @@ namespace BOT_V2.Grapher
             //B_NEXT.Click += B_NEXT_Click;
             Create_CoinPrice_Buttons();
         }
+        public GrapherForm_V4(string coinName, bool noGraph)
+        {
+            InitializeComponent();
+            this.coinName = coinName;
+            this.noGraph = noGraph;
+            FP_CoinPrice.Load += FP_CoinPrice_Load;
+        }
+        #region R
         void Create_CoinPrice_Buttons()
         {
             for (int i = 0; i < intervals.Count(); i++)
@@ -106,8 +124,6 @@ namespace BOT_V2.Grapher
                 ((Button)TLP_Buttons.Controls.Find("Button_Next", true).First()).Click += Button_Next_Clicked;
             }
         }
-
-
         void DrawVerticalLine_All(double gelen)
         {
             foreach (var item in FormsPlots)
@@ -115,7 +131,6 @@ namespace BOT_V2.Grapher
                 item.Plot.AddVerticalLine(gelen);
             }
         }
-
         private void Button_Next_Clicked(object? sender, EventArgs e)
         {
             //throw new NotImplementedException();
@@ -148,8 +163,6 @@ namespace BOT_V2.Grapher
                 rx.BackColor = Color.Empty;
             }
         }
-
-
         void Button_CoinPrice_Clicked(object? sender, EventArgs e)
         {
             Button rx = (Button)sender;
@@ -181,7 +194,6 @@ namespace BOT_V2.Grapher
             }
             FP_CoinPrice.Refresh(lowQuality: true, skipIfCurrentlyRendering: true);
         }
-
         private void FP_CoinPrice_MouseLeave(object? sender, EventArgs e)
         {
             Crosshair.IsVisible = false;
@@ -206,25 +218,31 @@ namespace BOT_V2.Grapher
                 item.IsVisible = true;
             }
         }
-
+        #endregion
         private void FP_CoinPrice_Load(object? sender, EventArgs e)
         {
-            Crosshair = FP_CoinPrice.Plot.AddCrosshair(0, 0);
-            Crosshair_Indicators = new Crosshair[FormsPlots.Count() - 1];
-            for (int i = 0; i < FormsPlots.Count(); i++)
+            #region CrossHairSetup
+            if (noGraph == false)
             {
-                if (FormsPlots[i] == FP_CoinPrice)
+                Crosshair = FP_CoinPrice.Plot.AddCrosshair(0, 0);
+                Crosshair_Indicators = new Crosshair[FormsPlots.Count() - 1];
+                for (int i = 0; i < FormsPlots.Count(); i++)
                 {
-                    continue;
+                    if (FormsPlots[i] == FP_CoinPrice)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        Crosshair_Indicators[i - 1] = FormsPlots[i].Plot.AddCrosshair(0, 0);
+                    }
                 }
-                else
-                {
-                    Crosshair_Indicators[i - 1] = FormsPlots[i].Plot.AddCrosshair(0, 0);
-                }
+                FP_CoinPrice_MouseLeave(null, null);
             }
-            FP_CoinPrice_MouseLeave(null, null);
+            #endregion
             Invoke(new Action(delegate ()
             {
+                #region Sql2Data
                 //------------------------------------------------------------------------
                 d_coinPrice = new double[intervals.Count(), 3][];
                 //interval
@@ -356,11 +374,8 @@ namespace BOT_V2.Grapher
                     Indicator_OBV_12[count_interval].IsVisible = false;
                     Indicator_OBV_24[count_interval].IsVisible = false;
                 }
+                #endregion
 
-
-
-
-                //int interval_position = 4; //1 hour
                 DataTable MyTable = new DataTable(); // 1
                 MyTable.Columns.Add("interval_position", typeof(int));
                 MyTable.Columns.Add("RSI_limit", typeof(int));
@@ -371,12 +386,12 @@ namespace BOT_V2.Grapher
                 MyTable.Columns.Add("FailCount", typeof(int));
                 MyTable.Columns.Add("S/F", typeof(double));
                 //MyTable.Columns.Add("Name", typeof(string));
-                for (int interval_position = 1; interval_position > -1; interval_position--)
+                for (int interval_position = 12; interval_position > 0; interval_position--)
                 {
                     for (int RSI_limit = 10; RSI_limit < 35; RSI_limit++)
                     {
                         List<double> HotSpots_X = new();
-                        List<double> HotSpots_Y = new(); 
+                        List<double> HotSpots_Y = new();
                         List<double> HotSpots_X_end = new();
                         List<double> HotSpots_Y_end = new();
                         List<string> HotSpots_end_status = new();
@@ -392,9 +407,11 @@ namespace BOT_V2.Grapher
                             {
                                 int t1 = Array.IndexOf(d_coinPrice[0, 0], d_coinPrice[interval_position, 0][i]);
                                 HotSpots_X.Add(d_coinPrice[0, 0][t1]);
-
-                                DrawVerticalLine_All(d_coinPrice[0, 0][t1]);
                                 HotSpots_Y.Add(d_coinPrice[0, 2][t1]);
+                                if (noGraph == false)
+                                {
+                                    DrawVerticalLine_All(d_coinPrice[0, 0][t1]);
+                                }
                             }
                         }
                         for (double getProfit = 1.02; getProfit < 1.20; getProfit += 0.01)
@@ -403,6 +420,7 @@ namespace BOT_V2.Grapher
                             {
                                 int SuccessCount = 0;
                                 int FailCount = 0;
+                                int NeutralCount = 0;
                                 double pnl = 0;
                                 for (int i = 0; i < HotSpots_X.Count; i++)
                                 {
@@ -411,49 +429,89 @@ namespace BOT_V2.Grapher
                                     {
                                         if (HotSpots_Y[i] * stopLoss >= d_coinPrice[0, 2][j])
                                         {
-                                            //HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
-                                            //HotSpots_Y_end.Add(d_coinPrice[0, 2][j]);
-                                            pnl -= ((1.0d - stopLoss) * 100.0d) - 1.0d;
+                                            if (noGraph == false)
+                                            {
+                                                HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
+                                                HotSpots_Y_end.Add(d_coinPrice[0, 2][j]);
+                                            }
+                                            pnl -= ((1.0d - stopLoss) * 100.0d) + 1.0d;
                                             HotSpots_end_status.Add("Loss");
                                             FailCount++;
                                             break;
                                         }
                                         else if (HotSpots_Y[i] * getProfit <= d_coinPrice[0, 1][j])
                                         {
-                                            //HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
-                                            //HotSpots_Y_end.Add(d_coinPrice[0, 1][j]);
+                                            if (noGraph == false)
+                                            {
+                                                HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
+                                                HotSpots_Y_end.Add(d_coinPrice[0, 1][j]);
+                                            }
                                             pnl += ((getProfit - 1.0d) * 100.0d) - 1.0d;
                                             HotSpots_end_status.Add("Profit");
                                             SuccessCount++;
                                             break;
                                         }
+                                        else if (j - t1 > 20)
+                                        {
+                                            if (noGraph == false)
+                                            {
+                                                HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
+                                                HotSpots_Y_end.Add(d_coinPrice[0, 2][j]);
+                                            }
+                                            pnl += (((d_coinPrice[0, 2][i] - d_coinPrice[0, 2][j]) / d_coinPrice[0, 2][i]) * 100) - 1;
+                                            HotSpots_end_status.Add("Neutral");
+                                            NeutralCount++;
+                                            break;
+                                        }
                                     }
                                 }
-                                 MyTable.Rows.Add(interval_position, RSI_limit, getProfit, stopLoss,pnl, SuccessCount, FailCount);
+                                if (noGraph == false)
+                                {
+                                    for (int i = 0; i < HotSpots_end_status.Count; i++)
+                                    {
+                                        var rp = FP_CoinPrice.Plot.AddRectangle(
+                                            xMin: HotSpots_X[i], xMax: HotSpots_X_end[i], yMin: HotSpots_Y[i], yMax: HotSpots_Y_end[i]);
+                                        if (HotSpots_end_status[i] == "Profit")
+                                        {
+                                            rp.Color = Color.FromArgb(100, Color.Green);
+                                        }
+                                        else
+                                        {
+                                            rp.Color = Color.FromArgb(100, Color.Red);
+                                        }
+
+                                    }
+                                }
+                                MyTable.Rows.Add(interval_position, RSI_limit, getProfit, stopLoss, pnl, SuccessCount, FailCount, NeutralCount);
                             }
                         }
                     }
-                }
-                StringBuilder sb = new StringBuilder();
-
-                IEnumerable<string> columnNames = MyTable.Columns.Cast<DataColumn>().
-                                                  Select(column => column.ColumnName);
-                sb.AppendLine(string.Join(",", columnNames));
-
-                foreach (DataRow row in MyTable.Rows)
-                {
-                    IEnumerable<string> fields = row.ItemArray.Select(field => field.ToString());
-                    sb.AppendLine(string.Join(",", fields));
+                    Save(MyTable, interval_position.ToString());
                 }
 
-                File.WriteAllText("test.csv", sb.ToString());
-                int asd=0;
+                //int asd = 0;
             }
             ));
         }
-        
-        
-        
+        void Save(DataTable dt, string name)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            IEnumerable<string> columnNames = dt.Columns.Cast<DataColumn>().
+                                              Select(column => column.ColumnName);
+            sb.AppendLine(string.Join(",", columnNames));
+
+            foreach (DataRow row in dt.Rows)
+            {
+                IEnumerable<string> fields = row.ItemArray.Select(field => field.ToString());
+                sb.AppendLine(string.Join(",", fields));
+            }
+
+            File.WriteAllText(name + "test.csv", sb.ToString());
+            dt.Clear();
+        }
+
+
         //void CreateSignalPoints(int RSI_limit)
         //{
         //    for (int i = 50; i < d_indicator_RSI[4, 0].Count(); i++)

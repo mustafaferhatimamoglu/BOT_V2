@@ -414,7 +414,7 @@ namespace BOT_V2.Grapher
                 MyTable.Columns.Add("FailCount", typeof(int));
                 MyTable.Columns.Add("S/F", typeof(double));
                 //MyTable.Columns.Add("Name", typeof(string));
-                for (int interval_position = 1; interval_position > -1; interval_position--)
+                for (int interval_position = 0; interval_position > -1; interval_position--)
                 {
                     for (int RSI_limit = 10; RSI_limit < 35; RSI_limit++)
                     {
