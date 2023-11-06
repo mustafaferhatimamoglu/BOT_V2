@@ -390,7 +390,7 @@ namespace BOT_V2.Grapher
                 MyTable.Columns.Add("NeutralCount", typeof(int));
                 interval_position = 4;//for (int interval_position = 9; interval_position > 0; interval_position--)
                 {
-                    for (int RSI_limit = 20; RSI_limit < 35; RSI_limit++)
+                    int RSI_limit = 30;//for (int RSI_limit = 20; RSI_limit < 35; RSI_limit++)
                     {
                         List<double> HotSpots_X = new();
                         List<double> HotSpots_Y = new();
@@ -416,11 +416,11 @@ namespace BOT_V2.Grapher
                                 }
                             }
                         }
-                        for (double getProfit = 1.02; getProfit < 1.10; getProfit += 0.01)
+                        for (double getProfit = 1.002; getProfit < 1.02; getProfit += 0.001)
                         {
-                            double stopLoss = 0.81;//for (double stopLoss = 0.98; stopLoss > 0.80; stopLoss -= 0.01)
+                            double stopLoss = 0.90;//for (double stopLoss = 0.98; stopLoss > 0.80; stopLoss -= 0.01)
                             {
-                                for (int stepSize = 60; stepSize < (5000); stepSize = stepSize + 100)
+                                for (int stepSize = 60; stepSize < (600); stepSize = stepSize + 10)
                                 //stepSize = 60 * 60;
                                 {
 
@@ -442,7 +442,7 @@ namespace BOT_V2.Grapher
                                                     HotSpots_Y_end.Add(d_coinPrice[0, 2][j]);
                                                 }
                                                 //pnl -= ((1.0d - stopLoss) * 100.0d) + 1.0d;
-                                                double pnl_Diff = (((d_coinPrice[0, 2][t1] - d_coinPrice[0, 2][j]) / d_coinPrice[0, 2][j]) * 100) - 1;
+                                                double pnl_Diff = (((d_coinPrice[0, 2][j] - d_coinPrice[0, 2][t1]) / d_coinPrice[0, 2][t1]) * 100) - 1;
                                                 pnl += pnl_Diff;
                                                 HotSpots_end_status.Add("Loss");
                                                 FailCount++;
@@ -456,7 +456,7 @@ namespace BOT_V2.Grapher
                                                     HotSpots_Y_end.Add(d_coinPrice[0, 1][j]);
                                                 }
                                                 //pnl += ((getProfit - 1.0d) * 100.0d) - 1.0d;
-                                                double pnl_Diff = (((d_coinPrice[0, 2][t1] - d_coinPrice[0, 2][j]) / d_coinPrice[0, 2][j]) * 100) - 1;
+                                                double pnl_Diff = (((d_coinPrice[0, 2][j] - d_coinPrice[0, 2][t1]) / d_coinPrice[0, 2][t1]) * 100) - 1;
                                                 pnl += pnl_Diff;
                                                 HotSpots_end_status.Add("Profit");
                                                 SuccessCount++;
@@ -469,9 +469,9 @@ namespace BOT_V2.Grapher
                                                     HotSpots_X_end.Add(d_coinPrice[0, 0][j]);
                                                     HotSpots_Y_end.Add(d_coinPrice[0, 2][j]);
                                                 }
-                                                double a1 = (d_coinPrice[0, 2][j]);
-                                                double a2 = (d_coinPrice[0, 2][t1]);
-                                                double pnl_Diff = (((d_coinPrice[0, 2][t1] - d_coinPrice[0, 2][j]) / d_coinPrice[0, 2][j]) * 100) - 1;
+                                                double a1 = (d_coinPrice[0, 2][t1]);
+                                                double a2 = (d_coinPrice[0, 2][j]);
+                                                double pnl_Diff = (((d_coinPrice[0, 2][j] - d_coinPrice[0, 2][t1]) / d_coinPrice[0, 2][t1]) * 100) - 1;
                                                 pnl += pnl_Diff;
                                                 if (pnl_Diff >= 0.0)
                                                 {
