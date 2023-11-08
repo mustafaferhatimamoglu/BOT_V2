@@ -68,7 +68,7 @@ namespace BOT_V2
 
         private void Button_Setup_Click(object sender, EventArgs e)
         {
-            var f = new Grapher.GrapherForm_V4("BTCUSDT",true);
+            var f = new Grapher.GrapherForm_V4("BTCUSDT", true);
             f.Show();
         }
     }

@@ -154,14 +154,14 @@
             // 
             // NUD_getProfit
             // 
-            NUD_getProfit.DecimalPlaces = 2;
+            NUD_getProfit.DecimalPlaces = 3;
             NUD_getProfit.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
             NUD_getProfit.Location = new Point(107, 3);
             NUD_getProfit.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             NUD_getProfit.Name = "NUD_getProfit";
             NUD_getProfit.Size = new Size(120, 23);
             NUD_getProfit.TabIndex = 0;
-            NUD_getProfit.Value = new decimal(new int[] { 11, 0, 0, 65536 });
+            NUD_getProfit.Value = new decimal(new int[] { 1005, 0, 0, 196608 });
             // 
             // panel3
             // 

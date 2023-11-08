@@ -400,8 +400,8 @@ namespace BOT_V2.Grapher
                         for (int i = 50; i < d_indicator_RSI[interval_position, 0].Count(); i++)
                         {
                             if (
-                                d_indicator_RSI[interval_position, 1][i - 1] < RSI_limit &&
-                                d_indicator_RSI[interval_position, 1][i] > RSI_limit &&
+                                d_indicator_RSI[interval_position, 2][i - 1] < RSI_limit &&
+                                d_indicator_RSI[interval_position, 2][i] > RSI_limit &&
 
                                 d_indicator_KDJ[interval_position, 2][i] > d_indicator_KDJ[interval_position, 1][i] &&
                                 d_indicator_KDJ[interval_position, 1][i] > d_indicator_KDJ[interval_position, 3][i]
@@ -416,12 +416,12 @@ namespace BOT_V2.Grapher
                                 }
                             }
                         }
-                        for (double getProfit = 1.002; getProfit < 1.02; getProfit += 0.001)
+                        for (double getProfit = 1.004; getProfit < 1.5; getProfit += 0.002)
                         {
                             double stopLoss = 0.90;//for (double stopLoss = 0.98; stopLoss > 0.80; stopLoss -= 0.01)
                             {
-                                for (int stepSize = 60; stepSize < (600); stepSize = stepSize + 10)
-                                //stepSize = 60 * 60;
+                                for (int stepSize = 60; stepSize < (60*24*3); stepSize = stepSize + 60)
+                                //stepSize = 2880;
                                 {
 
 
@@ -442,7 +442,7 @@ namespace BOT_V2.Grapher
                                                     HotSpots_Y_end.Add(d_coinPrice[0, 2][j]);
                                                 }
                                                 //pnl -= ((1.0d - stopLoss) * 100.0d) + 1.0d;
-                                                double pnl_Diff = (((d_coinPrice[0, 2][j] - d_coinPrice[0, 2][t1]) / d_coinPrice[0, 2][t1]) * 100) - 1;
+                                                double pnl_Diff = (((d_coinPrice[0, 2][j] - d_coinPrice[0, 2][t1]) / d_coinPrice[0, 2][t1]) * 100) - 0.2;
                                                 pnl += pnl_Diff;
                                                 HotSpots_end_status.Add("Loss");
                                                 FailCount++;
@@ -456,7 +456,7 @@ namespace BOT_V2.Grapher
                                                     HotSpots_Y_end.Add(d_coinPrice[0, 1][j]);
                                                 }
                                                 //pnl += ((getProfit - 1.0d) * 100.0d) - 1.0d;
-                                                double pnl_Diff = (((d_coinPrice[0, 2][j] - d_coinPrice[0, 2][t1]) / d_coinPrice[0, 2][t1]) * 100) - 1;
+                                                double pnl_Diff = (((d_coinPrice[0, 2][j] - d_coinPrice[0, 2][t1]) / d_coinPrice[0, 2][t1]) * 100) - 0.2;
                                                 pnl += pnl_Diff;
                                                 HotSpots_end_status.Add("Profit");
                                                 SuccessCount++;
@@ -471,7 +471,7 @@ namespace BOT_V2.Grapher
                                                 }
                                                 double a1 = (d_coinPrice[0, 2][t1]);
                                                 double a2 = (d_coinPrice[0, 2][j]);
-                                                double pnl_Diff = (((d_coinPrice[0, 2][j] - d_coinPrice[0, 2][t1]) / d_coinPrice[0, 2][t1]) * 100) - 1;
+                                                double pnl_Diff = (((d_coinPrice[0, 2][j] - d_coinPrice[0, 2][t1]) / d_coinPrice[0, 2][t1]) * 100) - 0.2;
                                                 pnl += pnl_Diff;
                                                 if (pnl_Diff >= 0.0)
                                                 {
@@ -502,7 +502,7 @@ namespace BOT_V2.Grapher
                                             }
                                             else if (HotSpots_end_status[i] == "Neutral+")
                                             {
-                                                rp.Color = Color.FromArgb(100, Color.LightGreen);
+                                                rp.Color = Color.FromArgb(100, Color.Yellow);
                                             }
                                             else if (HotSpots_end_status[i] == "Neutral-")
                                             {
@@ -517,7 +517,7 @@ namespace BOT_V2.Grapher
                         }
                     }
                     //Save(MyTable, interval_position.ToString());
-                    Save2(MyTable, interval_position.ToString());
+                    Save2(MyTable, getProfit.ToString());
                 }
 
                 //int asd = 0;
