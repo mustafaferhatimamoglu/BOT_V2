@@ -64,6 +64,9 @@ namespace BOT_V2.Operations
                         RSI_6 = Convert.ToSingle(reader["RSI_6"]),
                         RSI_12 = Convert.ToSingle(reader["RSI_12"]),
                         RSI_24 = Convert.ToSingle(reader["RSI_24"]),
+                        KDJ_K = Convert.ToSingle(reader["K"]),
+                        KDJ_D = Convert.ToSingle(reader["D"]),
+                        KDJ_J = Convert.ToSingle(reader["J"]),
                     };
                     klineDataList.Add(stockData);
                 }
@@ -96,10 +99,7 @@ namespace BOT_V2.Operations
                         Quote_asset_volume = Convert.ToSingle(reader["Quote_asset_volume"]),
                         Number_of_trades = Convert.ToSingle(reader["Number_of_trades"]),
                         Taker_buy_base_asset_volume = Convert.ToSingle(reader["Taker_buy_base_asset_volume"]),
-                        Taker_buy_quote_asset_volume = Convert.ToSingle(reader["Taker_buy_quote_asset_volume"]),
-                        KDJ_K = Convert.ToSingle(reader["K"]),
-                        KDJ_D = Convert.ToSingle(reader["D"]),
-                        KDJ_J = Convert.ToSingle(reader["J"]),
+                        Taker_buy_quote_asset_volume = Convert.ToSingle(reader["Taker_buy_quote_asset_volume"])
                     };
                     klineDataList.Add(stockData);
                 }
