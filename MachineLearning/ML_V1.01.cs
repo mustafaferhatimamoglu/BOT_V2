@@ -103,7 +103,7 @@ namespace BOT_V2.MachineLearning
             var predictionEngine = mlContext.Model.CreatePredictionEngine<Coin, CoinPrediction>(model);
             //break;
 
-            string sqlQuery_2 = " SELECT --TOP 100\r\n" +
+            string sqlQuery_2 = " SELECT \r\n" +
                 "  BTCUSDT_1h.*\r\n  ,RSI_6,RSI_12,RSI_24\r\n  ,K,D,J\r\n" +
                 "  FROM BTCUSDT_1h \r\n" +
                 "  inner join BTCUSDT_1h_RSI on \r\n  BTCUSDT_1h.Kline_close_time = BTCUSDT_1h_RSI.Time\r\n" +
@@ -136,6 +136,7 @@ namespace BOT_V2.MachineLearning
 
                 var coinSample = new Coin() { Kline_open_time = _Data.Kline_close_time + 1 };
                 var prediction = predictionEngine.Predict(coinSample);
+
             }
 
 
