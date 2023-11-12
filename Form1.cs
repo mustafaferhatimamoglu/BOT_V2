@@ -71,5 +71,11 @@ namespace BOT_V2
             var f = new Grapher.GrapherForm_V4("BTCUSDT", true);
             f.Show();
         }
+
+        private void Button_ML_Click(object sender, EventArgs e)
+        {
+            var f = new MachineLearning.ML_V1();
+            f.Show();
+        }
     }
 }
