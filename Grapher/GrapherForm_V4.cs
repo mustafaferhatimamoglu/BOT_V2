@@ -416,11 +416,11 @@ namespace BOT_V2.Grapher
                                 }
                             }
                         }
-                        for (double getProfit = 1.004; getProfit < 1.5; getProfit += 0.002)
+                        //for (double getProfit = 1.004; getProfit < 1.5; getProfit += 0.002)
                         {
                             double stopLoss = 0.90;//for (double stopLoss = 0.98; stopLoss > 0.80; stopLoss -= 0.01)
                             {
-                                for (int stepSize = 60; stepSize < (60*24*3); stepSize = stepSize + 60)
+                                //for (int stepSize = 60; stepSize < (60*24*3); stepSize = stepSize + 60)
                                 //stepSize = 2880;
                                 {
 
