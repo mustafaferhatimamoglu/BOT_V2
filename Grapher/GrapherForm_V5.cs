@@ -523,6 +523,17 @@ namespace BOT_V2.Grapher
                 #endregion
 
                 #region ML
+                var ML_LearnCounter = d_coinPrice[4, 0].Count();
+                int ML_Offset = 250;
+                int ML_Predict = 100;
+
+                string sqlQuery_ML = " SELECT \r\n" +
+                "  BTCUSDT_1h.*\r\n  ,RSI_6,RSI_12,RSI_24\r\n  ,K,D,J\r\n" +
+                "  FROM BTCUSDT_1h \r\n" +
+                "  inner join BTCUSDT_1h_RSI on \r\n  BTCUSDT_1h.Kline_close_time = BTCUSDT_1h_RSI.Time\r\n" +
+                "  inner join BTCUSDT_1h_KDJ on \r\n  BTCUSDT_1h.Kline_close_time = BTCUSDT_1h_KDJ.Time\r\n" +
+                " order by Kline_close_time\r\noffset "+ ML_Offset + " ROWS\r\nFETCH NEXT "+(ML_LearnCounter- ML_Offset- ML_Predict) +" ROWS ONLY";
+                var sql_Data_2 = Operations.KlineData.GetKlineData_All(sqlQuery_ML);
 
                 #endregion
 
