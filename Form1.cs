@@ -77,5 +77,17 @@ namespace BOT_V2
             var f = new MachineLearning.ML_V1();
             f.Show();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //var f = new Grapher.GrapherForm_V5("BTCUSDT", false);
+            string coinName = TB_coinName.Text;
+            int interval_position = LB_interval.SelectedIndex;
+            double RSI_limit = (double)NUD_RSI.Value;
+            double getProfit = (double)NUD_getProfit.Value;
+            double stopLoss = (double)NUD_stopLoss.Value;
+            var f = new Grapher.GrapherForm_V5(coinName, interval_position, RSI_limit, getProfit, stopLoss);
+            f.Show();
+        }
     }
 }

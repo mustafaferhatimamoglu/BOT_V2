@@ -45,6 +45,7 @@
             NUD_stopLoss = new NumericUpDown();
             Button_Setup = new Button();
             Button_ML = new Button();
+            button3 = new Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)NUD_RSI).BeginInit();
             panel2.SuspendLayout();
@@ -213,11 +214,22 @@
             Button_ML.UseVisualStyleBackColor = true;
             Button_ML.Click += Button_ML_Click;
             // 
+            // button3
+            // 
+            button3.Location = new Point(12, 217);
+            button3.Name = "button3";
+            button3.Size = new Size(75, 23);
+            button3.TabIndex = 10;
+            button3.Text = "button3";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(867, 562);
+            Controls.Add(button3);
             Controls.Add(Button_ML);
             Controls.Add(Button_Setup);
             Controls.Add(panel3);
@@ -263,5 +275,6 @@
         private NumericUpDown NUD_stopLoss;
         private Button Button_Setup;
         private Button Button_ML;
+        private Button button3;
     }
 }
