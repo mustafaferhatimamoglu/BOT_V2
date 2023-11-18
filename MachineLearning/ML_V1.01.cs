@@ -134,7 +134,9 @@ namespace BOT_V2.MachineLearning
                     KDJ_J = (float)_Data.KDJ_J,
                 });
 
-                var coinSample = new Coin() { Kline_open_time = _Data.Kline_close_time + 1 };
+                var coinSample = new Coin() { 
+                    Kline_open_time = _Data.Kline_close_time + 1 
+                };
                 var prediction = predictionEngine.Predict(coinSample);
 
             }

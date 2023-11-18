@@ -1,6 +1,8 @@
 ﻿using BOT_V2.Binance.Spot.Models;
 using BOT_V2.Indicators;
+using BOT_V2.MachineLearning;
 using BOT_V2.Operations;
+using Microsoft.ML;
 using ScottPlot;
 using ScottPlot.Plottable;
 using ScottPlot.Statistics;
@@ -13,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace BOT_V2.Grapher
 {
@@ -533,8 +536,52 @@ namespace BOT_V2.Grapher
                 "  inner join BTCUSDT_1h_RSI on \r\n  BTCUSDT_1h.Kline_close_time = BTCUSDT_1h_RSI.Time\r\n" +
                 "  inner join BTCUSDT_1h_KDJ on \r\n  BTCUSDT_1h.Kline_close_time = BTCUSDT_1h_KDJ.Time\r\n" +
                 " order by Kline_close_time\r\noffset "+ ML_Offset + " ROWS\r\nFETCH NEXT "+(ML_LearnCounter- ML_Offset- ML_Predict) +" ROWS ONLY";
-                var sql_Data_2 = Operations.KlineData.GetKlineData_All(sqlQuery_ML);
+                var sqlData_ML = Operations.KlineData.GetKlineData_All(sqlQuery_ML);
 
+                MLContext mlContext = new MLContext();
+                var data = new List<Coin>();
+                var trainingDataView = mlContext.Data.LoadFromEnumerable(data);
+
+                //.Append(mlContext.Transforms.CopyColumns(outputColumnName: "Score", inputColumnName: "Score"));
+                var pipeline = mlContext.Transforms.CopyColumns(outputColumnName: "Label", inputColumnName: "Close_price")
+                .Append(mlContext.Transforms.Concatenate("Features", "Kline_open_time", "Open_price", "High_price", "Low_price", "Volume", "Kline_close_time", "Quote_asset_volume", "Number_of_trades", "Taker_buy_base_asset_volume", "Taker_buy_quote_asset_volume", "RSI_6", "RSI_12", "RSI_24", "KDJ_K", "KDJ_D", "KDJ_J"))
+                .Append(mlContext.Regression.Trainers.Sdca(labelColumnName: "Label", featureColumnName: "Features"))
+                .Append(mlContext.Transforms.CopyColumns(outputColumnName: "Score", inputColumnName: "Score"));
+
+
+                foreach (var _Data in sqlData_ML)
+                {
+                    data.Add(new Coin
+                    {
+                        Kline_open_time = _Data.Kline_open_time,
+                        Open_price = (float)_Data.Open_price,
+                        High_price = (float)_Data.High_price,
+                        Low_price = (float)_Data.Low_price,
+                        Close_price = (float)_Data.Close_price,
+                        Volume = (float)_Data.Volume,
+                        Kline_close_time = _Data.Kline_close_time,
+                        Quote_asset_volume = (float)_Data.Quote_asset_volume,
+                        Number_of_trades = (float)_Data.Number_of_trades,
+                        Taker_buy_base_asset_volume = (float)_Data.Taker_buy_base_asset_volume,
+                        Taker_buy_quote_asset_volume = (float)_Data.Taker_buy_quote_asset_volume,
+                        RSI_6 = (float)_Data.RSI_6,
+                        RSI_12 = (float)_Data.RSI_12,
+                        RSI_24 = (float)_Data.RSI_24,
+                        KDJ_K = (float)_Data.KDJ_K,
+                        KDJ_D = (float)_Data.KDJ_D,
+                        KDJ_J = (float)_Data.KDJ_J,
+                    });
+                }
+                var model = pipeline.Fit(trainingDataView);
+                var predictionEngine = mlContext.Model.CreatePredictionEngine<Coin, CoinPrediction>(model);
+
+                //for (int i = 0;)
+                for (int i = 0; i < 100; i++)
+                {
+                    var coinSample = new Coin() { Kline_open_time = sqlData_ML[sqlData_ML.Count()-1].Kline_open_time };
+                        // _Data.Kline_close_time + 1 };
+                    var prediction = predictionEngine.Predict(coinSample);
+                }
                 #endregion
 
                 //int asd = 0;
