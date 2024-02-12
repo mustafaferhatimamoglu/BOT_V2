@@ -15,6 +15,7 @@ namespace BOT_V2
         string COIN = "BTCUSDT";
         Interval interval = Interval.ONE_MONTH;
         long Time_2022 = 1640995200000;
+        //comment tkle
         private void button1_Click(object sender, EventArgs e)
         {
             //var RawData = await market.KlineCandlestickData(
